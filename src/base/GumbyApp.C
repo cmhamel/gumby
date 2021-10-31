@@ -30,6 +30,10 @@ GumbyApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
   Registry::registerActionsTo(af, {"GumbyApp"});
 
   /* register custom execute flags, action syntax, etc. here */
+
+  registerSyntax("GumbyAddVariablesAction", "GumbyVariables");
+  registerSyntax("GumbyAddStressDivergenceKernelsAction",
+                 "GumbyStressDivergenceKernels");
 }
 
 void
