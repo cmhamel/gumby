@@ -22,8 +22,8 @@ protected:
 
   // Material properties
   //
-  const MaterialProperty<RankTwoTensor> * _F_old;
-  const MaterialProperty<RankTwoTensor> * _F_new;
+  // const MaterialProperty<RankTwoTensor> * _F_old;
+  // const MaterialProperty<RankTwoTensor> * _F_new;
   const MaterialProperty<RankTwoTensor> & _pk1_stress;
   const MaterialProperty<RankFourTensor> & _material_tangent;
 };

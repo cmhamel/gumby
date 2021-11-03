@@ -42,13 +42,11 @@ GumbyMaterialBase::GumbyMaterialBase(const InputParameters & parameters)
   {
     if (i < _ndisp)
     {
-      // _disp[i] = &coupledValue("displacements", i);
       _grad_disp_old[i] = &coupledGradientOld("displacements", i);
       _grad_disp_new[i] = &coupledGradient("displacements", i);
     }
     else
     {
-      // _disp[i] = &_zero;
       _grad_disp_old[i] = &_grad_zero;
       _grad_disp_new[i] = &_grad_zero;
     }
@@ -75,24 +73,6 @@ GumbyMaterialBase::computeQpProperties()
 {
   computeDeformationGradient();
 }
-
-// stress and tangent mehtods to be overridden in derive materials
-//
-// RankTwoTensor
-// GumbyMaterialBase::computePK1Stress()
-// {
-//   // dummy response
-//   //
-//   return _I;
-// }
-//
-// RankFourTensor
-// GumbyMaterialBase::computeMaterialTangent()
-// {
-//   // dummy response
-//   //
-//   return _II;
-// }
 
 // strain methods
 //

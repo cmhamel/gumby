@@ -29,8 +29,8 @@ GumbyStressDivergence(const InputParameters & parameters)
     _pk1_stress(getMaterialPropertyByName<RankTwoTensor>(_base_name + "pk1_stress")),
     _material_tangent(getMaterialPropertyByName<RankFourTensor>(_base_name + "material_tangent"))
 {
-  _F_new = &getMaterialProperty<RankTwoTensor>(_base_name + "deformation_gradient_new");
-  _F_old = &getMaterialProperty<RankTwoTensor>(_base_name + "deformation_gradient_old");
+  // _F_new = &getMaterialProperty<RankTwoTensor>(_base_name + "deformation_gradient_new");
+  // _F_old = &getMaterialProperty<RankTwoTensor>(_base_name + "deformation_gradient_old");
 }
 
 Real
@@ -78,4 +78,5 @@ GumbyStressDivergence::computeQpOffDiagJacobian(unsigned int jvar)
       return 0.0;
     }
   }
+  return 0.0;
 }

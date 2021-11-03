@@ -11,6 +11,8 @@ public:
 protected:
   std::vector<VariableName> _displacements;
   std::string _base_name;
+  std::vector<SubdomainName> _blocks;
+  // std::string _material_model_name;
 };
 
 template <>

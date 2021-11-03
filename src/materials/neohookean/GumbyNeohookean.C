@@ -36,6 +36,17 @@ GumbyNeohookean::computeQpProperties()
   _material_tangent[_qp] = computeMaterialTangent(_bulk_modulus, _shear_modulus, _F_new[_qp]);
 }
 
+Real
+GumbyNeohookean::computeStrainEnergy(Real K, Real G, RankTwoTensor F)
+{
+  const Real I_1 = (F * F.transpose()).trace();
+  const Real J = F.det();
+  const Real J_minus_2_3 = std::pow(J, -2.0 / 3.0);
+
+  Real W = (G / 2.0) * (J_minus_2_3 * I_1 - 3.0) + K * (J * J - 1.0);
+  return W;
+}
+
 RankTwoTensor
 GumbyNeohookean::computePK1Stress(Real K, Real G, RankTwoTensor F)
 {

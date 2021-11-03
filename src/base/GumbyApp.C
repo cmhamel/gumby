@@ -33,7 +33,7 @@ GumbyApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
 
   registerSyntax("GumbyAddVariablesAction", "GumbyVariables");
   registerSyntax("GumbyAddStressDivergenceKernelsAction",
-                 "GumbyStressDivergenceKernels");
+                 "GumbyStressDivergenceKernels/*");
 }
 
 void

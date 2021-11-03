@@ -11,6 +11,7 @@ protected:
   virtual void initQpStatefulProperties() override;
   virtual void computeQpProperties() override;
 
+  Real computeStrainEnergy(Real,Real,RankTwoTensor);
   RankTwoTensor computePK1Stress(Real,Real,RankTwoTensor);
   RankFourTensor computeMaterialTangent(Real,Real,RankTwoTensor);
 
