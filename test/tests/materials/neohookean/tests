@@ -1,0 +1,12 @@
+[Tests]
+  [test_run]
+    #type = 'Exodiff'
+    type = 'CSVDiff'
+    input = 'neohookean_uniaxial_stress.i'
+    #exodiff = 'neohookean_uniaxial_stress_out.e'
+    csvdiff = 'neohookean_uniaxial_stress_out.csv'
+    requirement = 'Neohookean single element simulation should run'
+    rel_err = 1e-03
+    abs_zero = 1e-03
+  []
+[]
