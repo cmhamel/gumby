@@ -9,33 +9,12 @@
   displacements_order = FIRST
 []
 
-# [GumbySections]
-#   displacements = 'displ_x displ_y displ_z'
-#   base_name = 'rubber'
-# []
-
-[Kernels]
-  [linear_momentum_x]
-    type = GumbyADStressDivergence
-    variable = displ_x
-    component = 0
+[GumbySections]
+  [./rubber_section]
     displacements = 'displ_x displ_y displ_z'
     base_name = 'rubber'
-  []
-  [linear_momentum_y]
-    type = GumbyADStressDivergence
-    variable = displ_y
-    component = 1
-    displacements = 'displ_x displ_y displ_z'
-    base_name = 'rubber'
-  []
-  [linear_momentum_z]
-    type = GumbyADStressDivergence
-    variable = displ_z
-    component = 2
-    displacements = 'displ_x displ_y displ_z'
-    base_name = 'rubber'
-  []
+    block = 1
+  [../]
 []
 
 [Materials]
