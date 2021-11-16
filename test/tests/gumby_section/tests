@@ -1,0 +1,8 @@
+[Tests]
+  [test_gumby_section]
+    type = 'Exodiff'
+    input = 'test_gumby_section.i'
+    exodiff = 'test_gumby_section_out.e'
+    requirement = 'GumbySectionAction should work.'
+  []
+[]

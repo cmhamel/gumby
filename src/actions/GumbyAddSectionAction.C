@@ -42,11 +42,12 @@ void GumbyAddSectionAction::act()
       else if (i == 2)
         kernel_name += "z";
 
-      auto params = _factory.getValidParams("GumbyStressDivergence");
+      auto params = _factory.getValidParams("GumbyADStressDivergence");
       params.set<NonlinearVariableName>("variable") = _displacements[i];
       params.set<unsigned int>("component") = i;
       params.set<std::vector<VariableName>>("displacements") = _displacements;
       params.set<std::string>("base_name") = _base_name;
+      params.set<std::vector<SubdomainName>>("block") = _blocks;
       _problem->addKernel("GumbyADStressDivergence", kernel_name, params);
     }
     std::cout << std::endl << std::endl << std::endl;

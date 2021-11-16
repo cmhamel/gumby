@@ -9,38 +9,18 @@
   displacements_order = FIRST
 []
 
-# [GumbySections]
-#   displacements = 'displ_x displ_y displ_z'
-#   base_name = 'rubber'
-# []
-
-[Kernels]
-  [linear_momentum_x]
-    type = GumbyADStressDivergence
-    variable = displ_x
-    component = 0
+[GumbySections]
+  [./rubber_section]
     displacements = 'displ_x displ_y displ_z'
     base_name = 'rubber'
-  []
-  [linear_momentum_y]
-    type = GumbyADStressDivergence
-    variable = displ_y
-    component = 1
-    displacements = 'displ_x displ_y displ_z'
-    base_name = 'rubber'
-  []
-  [linear_momentum_z]
-    type = GumbyADStressDivergence
-    variable = displ_z
-    component = 2
-    displacements = 'displ_x displ_y displ_z'
-    base_name = 'rubber'
-  []
+    block = 1
+  [../]
 []
 
 [Materials]
   [rubber]
     type = GumbyADNeohookean
+    block = 1
     displacements = 'displ_x displ_y displ_z'
     base_name = 'rubber'
     bulk_modulus = 1000.0e6
@@ -109,23 +89,21 @@
 
 [Executioner]
   type = Transient
-  solve_type = 'newton'
+  # solve_type = 'newton'
+  solve_type = 'PJFNK'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
   start_time = 0.0
   end_time = 1.0
   dt = 0.01
   nl_rel_tol = 1e-10
   nl_abs_tol = 1e-10
-  l_max_its = 100
+  l_max_its = 1000
   nl_max_its = 250
 []
 
 [Outputs]
   exodus = true
-  file_base = neohookean_simple_shear_out
   perf_graph = true
   print_linear_residuals = false
-  execute_on = 'INITIAL TIMESTEP_END'
-  [./csv]
-    type = CSV
-  [../]
 []
