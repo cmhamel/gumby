@@ -1,0 +1,8 @@
+[Tests]
+  [test_gumby_section]
+    type = 'Exodiff'
+    input = 'test_inclusion_in_matrix.i'
+    exodiff = 'test_inclusion_in_matrix_out.e'
+    requirement = 'Two blocks should work.'
+  []
+[]

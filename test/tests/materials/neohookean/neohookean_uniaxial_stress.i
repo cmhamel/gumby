@@ -64,6 +64,7 @@
 
 [GumbyOutputElementVariables]
   base_names = 'rubber'
+  blocks = '1'
   deformation_gradient = 'F_field'
   pk1_stress = 'P_field'
 []

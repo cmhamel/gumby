@@ -1,10 +1,10 @@
 [Mesh]
   type = FileMesh
-  file = cube.e
+  file = inclusion_in_matrix.e
 []
 
 [GlobalParams]
-  displacements = 'displ_x displ_y displ_z'
+  displacements = 'displ_x displ_y'
 []
 
 [GumbyVariables]
@@ -13,19 +13,32 @@
 []
 
 [GumbySections]
-  [./rubber_section]
-    base_name = 'rubber'
+  [./soft_rubber_section]
+    base_name = 'soft_rubber'
     block = 1
+  [../]
+  [./hard_rubber_section]
+    base_name = 'hard_rubber'
+    block = 2
   [../]
 []
 
 [Materials]
-  [rubber]
+  [soft_rubber]
     type = GumbyADNeohookean
     block = 1
-    base_name = 'rubber'
+    base_name = 'soft_rubber'
+    plane_strain = on
+    bulk_modulus = 100.0e6
+    shear_modulus = 0.1e6
+  []
+  [hard_rubber]
+    type = GumbyADNeohookean
+    block = 2
+    base_name = 'hard_rubber'
+    plane_strain = on
     bulk_modulus = 1000.0e6
-    shear_modulus = 1.0e6
+    shear_modulus = 0.1e6
   []
 []
 
@@ -38,26 +51,29 @@
 
 [BCs]
   [./GumbyFixedDisplacementBC]
-    [./corner_fixed_xyz]
-      components = 'x y z'
-      boundary = 7
-    [../]
-    [./left_fixed_xyz]
-      components = 'x y z'
+    [./left_fixed_xy]
+      components = 'x y'
       boundary = 1
     [../]
-    [./right_fixed_xz]
-      components = 'x z'
-      boundary = 4
+    [./right_fixed_y]
+      components = 'y'
+      boundary = 2
     [../]
   [../]
-  [right_displace_y]
+  [./right_displace_x]
     type = FunctionDirichletBC
-    variable = displ_y
-    boundary = 4
+    variable = displ_x
+    boundary = 2
     function = ramp
-  []
+  [../]
 []
+
+# [GumbyOutputElementVariables]
+#   base_names = 'soft_rubber'
+#   blocks = '1 2'
+#   deformation_gradient = 'F'
+#   pk1_stress = 'P'
+# []
 
 [Preconditioning]
   [smp]
@@ -78,12 +94,6 @@
   nl_abs_tol = 1e-10
   l_max_its = 1000
   nl_max_its = 250
-[]
-
-[GumbyOutputElementVariables]
-  base_names = 'rubber'
-  deformation_gradient = 'F'
-  pk1_stress = 'P'
 []
 
 [Outputs]
