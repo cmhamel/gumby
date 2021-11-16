@@ -1,0 +1,8 @@
+[Tests]
+  [test_gumby_fixed_displacement_bc]
+    type = 'Exodiff'
+    input = 'test_gumby_fixed_displacement_bc.i'
+    exodiff = 'test_gumby_fixed_displacement_bc_out.e'
+    requirement = 'GumbySectionAction should work.'
+  []
+[]

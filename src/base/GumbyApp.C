@@ -35,6 +35,10 @@ GumbyApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
   registerSyntax("GumbyAddStressDivergenceKernelsAction",
                  "GumbyStressDivergenceKernels/*");
   registerSyntax("GumbyAddSectionAction", "GumbySections/*");
+  registerSyntax("EmptyAction",
+                 "BCs/GumbyFixedDisplacementBC");
+  registerSyntax("GumbyAddFixedDisplacementBCAction",
+                 "BCs/GumbyFixedDisplacementBC/*");
 }
 
 void
