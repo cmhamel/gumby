@@ -14,12 +14,12 @@ if __name__ == '__main__':
         times[n] = n * delta_t
 
     for n in range(1, Fs.shape[0]):
-        Fs[n, 1, 1] = 1.0 + n * delta_t
+        Fs[n, 0, 0] = 1.0 + n * delta_t
 
     for n in range(1, Fs.shape[0]):
-        Fs[n, 0, 0] = 1.0 / np.sqrt(Fs[n, 1, 1])
-        Fs[n, 2, 2] = 1.0 / np.sqrt(Fs[n, 1, 1])
-        Ps[n, 1, 1] = 1.0e6 * (Fs[n, 1, 1] - 1.0 / (Fs[n, 1, 1]**2))
+        Fs[n, 1, 1] = 1.0 / np.sqrt(Fs[n, 0, 0])
+        Fs[n, 2, 2] = 1.0 / np.sqrt(Fs[n, 0, 0])
+        Ps[n, 0, 0] = 1.0e6 * (Fs[n, 0, 0] - 1.0 / (Fs[n, 0, 0]**2))
 
     dict = {'time': times,
             'F_xx': Fs[:, 0, 0],

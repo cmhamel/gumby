@@ -3,15 +3,17 @@
   file = cube.e
 []
 
-[GumbyVariables]
+[GlobalParams]
   displacements = 'displ_x displ_y displ_z'
+[]
+
+[GumbyVariables]
   displacements_family = LAGRANGE
   displacements_order = FIRST
 []
 
 [GumbySections]
   [./rubber_section]
-    displacements = 'displ_x displ_y displ_z'
     base_name = 'rubber'
     block = 1
   [../]
@@ -20,7 +22,6 @@
 [Materials]
   [rubber]
     type = GumbyADNeohookean
-    displacements = 'displ_x displ_y displ_z'
     base_name = 'rubber'
     bulk_modulus = 1000.0e6
     shear_modulus = 1.0e6
@@ -35,152 +36,68 @@
 []
 
 [BCs]
-  [corner_fixed_x]
-    type = DirichletBC
-    variable = displ_x
-    boundary = 7
-    value = 0.0
-  []
-  [corner_fixed_y]
-    type = DirichletBC
-    variable = displ_y
-    boundary = 7
-    value = 0.0
-  []
-  [corner_fixed_z]
-    type = DirichletBC
-    variable = displ_z
-    boundary = 7
-    value = 0.0
-  []
-  [left_fixed_x]
-    type = DirichletBC
-    variable = displ_x
-    boundary = 1
-    value = 0.0
-  []
-  [bottom_fixed_y]
-    type = DirichletBC
-    variable = displ_y
-    boundary = 2
-    value = 0.0
-  []
-  [back_fixed_z]
-    type = DirichletBC
-    variable = displ_z
-    boundary = 3
-    value = 0.0
-  []
-  [top_displace_y]
+  [./GumbyFixedDisplacementBC]
+    [./corner_fixed_xyz]
+      components = 'x y z'
+      boundary = 7
+    [../]
+    [./left_fixed_x]
+      components = 'x'
+      boundary = 1
+    [../]
+    [./bottom_fixed_y]
+      components = 'y'
+      boundary = 2
+    [../]
+    [./back_fixed_z]
+      components = 'z'
+      boundary = 3
+    [../]
+  [../]
+  [./right_displace_x]
     type = FunctionDirichletBC
-    variable = displ_y
-    boundary = 5
+    variable = displ_x
+    boundary = 4
     function = ramp
-  []
-[]
-
-[AuxVariables]
-  [./deformation_gradient_xx]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./deformation_gradient_yy]
-    order = CONSTANT
-    family = MONOMIAL
-  []
-  [./deformation_gradient_zz]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./pk1_stress_xx]
-    order = CONSTANT
-    family = MONOMIAL
-  [../]
-  [./pk1_stress_yy]
-    order = CONSTANT
-    family = MONOMIAL
-  []
-  [./pk1_stress_zz]
-    order = CONSTANT
-    family = MONOMIAL
   [../]
 []
 
-[AuxKernels]
-  [./deformation_gradient_xx]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_deformation_gradient_new'
-    variable = deformation_gradient_xx
-    index_i = 0
-    index_j = 0
-  [../]
-  [./deformation_gradient_yy]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_deformation_gradient_new'
-    variable = deformation_gradient_yy
-    index_i = 1
-    index_j = 1
-  [../]
-  [./deformation_gradient_zz]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_deformation_gradient_new'
-    variable = deformation_gradient_zz
-    index_i = 2
-    index_j = 2
-  [../]
-  [./pk1_stress_xx]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_pk1_stress'
-    variable = pk1_stress_xx
-    index_i = 0
-    index_j = 0
-  [../]
-  [./pk1_stress_yy]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_pk1_stress'
-    variable = pk1_stress_yy
-    index_i = 1
-    index_j = 1
-  [../]
-  [./pk1_stress_zz]
-    type = ADRankTwoAux
-    rank_two_tensor = 'rubber_pk1_stress'
-    variable = pk1_stress_zz
-    index_i = 2
-    index_j = 2
-  [../]
+[GumbyOutputElementVariables]
+  base_names = 'rubber'
+  deformation_gradient = 'F_field'
+  pk1_stress = 'P_field'
 []
 
 [Postprocessors]
   [./F_xx]
     type = PointValue
     point = '0 0 0'
-    variable = deformation_gradient_xx
+    variable = F_field_xx
   [../]
   [./F_yy]
     type = PointValue
     point = '0 0 0'
-    variable = deformation_gradient_yy
+    variable = F_field_yy
   [../]
   [./F_zz]
     type = PointValue
     point = '0 0 0'
-    variable = deformation_gradient_zz
+    variable = F_field_zz
   [../]
   [./P_xx]
     type = PointValue
     point = '0 0 0'
-    variable = pk1_stress_xx
+    variable = P_field_xx
   [../]
   [./P_yy]
     type = PointValue
     point = '0 0 0'
-    variable = pk1_stress_yy
+    variable = P_field_yy
   [../]
   [./P_zz]
     type = PointValue
     point = '0 0 0'
-    variable = pk1_stress_zz
+    variable = P_field_zz
   [../]
 []
 

@@ -39,6 +39,8 @@ GumbyApp::registerAll(Factory & f, ActionFactory & af, Syntax & syntax)
                  "BCs/GumbyFixedDisplacementBC");
   registerSyntax("GumbyAddFixedDisplacementBCAction",
                  "BCs/GumbyFixedDisplacementBC/*");
+  registerSyntax("GumbyAddElementVariableOutputAction",
+                 "GumbyOutputElementVariables");
 }
 
 void

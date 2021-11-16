@@ -80,6 +80,14 @@
   nl_max_its = 250
 []
 
+[GumbyOutputElementVariables]
+  # [./rubber_section_outputs]
+  base_names = 'rubber'
+  deformation_gradient = 'F'
+  pk1_stress = 'P'
+  # [../]
+[]
+
 [Outputs]
   exodus = true
   perf_graph = true
