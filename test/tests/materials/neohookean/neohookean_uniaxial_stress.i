@@ -225,12 +225,10 @@
 []
 
 [Outputs]
-  # exodus = true
-  exodus = false
+  exodus = true
   file_base = neohookean_uniaxial_stress_out
   perf_graph = true
   print_linear_residuals = false
-  # execute_on = 'TIMESTEP_END'
   execute_on = 'INITIAL TIMESTEP_END'
   [./csv]
     type = CSV

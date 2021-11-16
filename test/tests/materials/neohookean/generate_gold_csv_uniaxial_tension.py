@@ -23,10 +23,22 @@ if __name__ == '__main__':
 
     dict = {'time': times,
             'F_xx': Fs[:, 0, 0],
+            # 'F_xy': Fs[:, 0, 1],
+            # 'F_xz': Fs[:, 0, 2],
+            # 'F_yx': Fs[:, 1, 0],
             'F_yy': Fs[:, 1, 1],
+            # 'F_yz': Fs[:, 1, 2],
+            # 'F_zx': Fs[:, 2, 0],
+            # 'F_zy': Fs[:, 2, 1],
             'F_zz': Fs[:, 2, 2],
             'P_xx': Ps[:, 0, 0],
+            # 'P_xy': Ps[:, 0, 1],
+            # 'P_xz': Ps[:, 0, 2],
+            # 'P_yx': Ps[:, 1, 0],
             'P_yy': Ps[:, 1, 1],
+            # 'P_yz': Ps[:, 1, 2],
+            # 'P_zx': Ps[:, 2, 0],
+            # 'P_zy': Ps[:, 2, 1],
             'P_zz': Ps[:, 2, 2]}
 
     dataframe = pandas.DataFrame(dict)
