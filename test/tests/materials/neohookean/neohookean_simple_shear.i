@@ -1,6 +1,21 @@
 [Mesh]
-  type = FileMesh
-  file = cube.e
+  [generated_mesh]
+    type = GeneratedMeshGenerator
+    dim = 3
+    xmin = 0
+    ymin = 0
+    zmin = 0
+    xmax = 1
+    ymax = 1
+    zmax = 1
+  []
+  [assign_block]
+    type = SubdomainBoundingBoxGenerator
+    input = generated_mesh
+    bottom_left = '0 0 0'
+    top_right = '1 1 1'
+    block_id = 1
+  []
 []
 
 [GumbyVariables]
@@ -35,47 +50,41 @@
 []
 
 [BCs]
-  [corner_fixed_x]
-    type = DirichletBC
-    variable = displ_x
-    boundary = 7
-    value = 0.0
-  []
-  [corner_fixed_y]
-    type = DirichletBC
-    variable = displ_y
-    boundary = 7
-    value = 0.0
-  []
-  [corner_fixed_z]
-    type = DirichletBC
-    variable = displ_z
-    boundary = 7
-    value = 0.0
-  []
   [left_fixed_x]
     type = DirichletBC
     variable = displ_x
-    boundary = 1
+    boundary = 'left'
     value = 0.0
   []
   [left_fixed_y]
     type = DirichletBC
     variable = displ_y
-    boundary = 1
+    boundary = 'left'
     value = 0.0
   []
   [left_fixed_z]
     type = DirichletBC
     variable = displ_z
-    boundary = 1
+    boundary = 'left'
+    value = 0.0
+  []
+  [right_fixed_x]
+    type = DirichletBC
+    variable = displ_x
+    boundary = 'right'
     value = 0.0
   []
   [right_displace_y]
     type = FunctionDirichletBC
     variable = displ_y
-    boundary = 4
+    boundary = 'right'
     function = ramp
+  []
+  [right_fixed_z]
+    type = DirichletBC
+    variable = displ_z
+    boundary = 'right'
+    value = 0.0
   []
 []
 

@@ -1,6 +1,28 @@
 [Mesh]
-  type = FileMesh
-  file = cube.e
+  [generated_mesh]
+    type = GeneratedMeshGenerator
+    dim = 3
+    xmin = 0
+    ymin = 0
+    zmin = 0
+    xmax = 1
+    ymax = 1
+    zmax = 1
+  []
+  [assign_block]
+    type = SubdomainBoundingBoxGenerator
+    input = generated_mesh
+    bottom_left = '0 0 0'
+    top_right = '1 1 1'
+    block_id = 1
+  []
+  [node_set]
+    type = BoundingBoxNodeSetGenerator
+    input = assign_block
+    bottom_left = '0 0 0'
+    top_right = '0 0 0'
+    new_boundary = 'corner'
+  []
 []
 
 [GlobalParams]
@@ -31,7 +53,7 @@
 [Functions]
   [ramp]
     type = ParsedFunction
-    value = 't'
+    value = '2 * t'
   []
 []
 
@@ -39,25 +61,25 @@
   [./GumbyFixedDisplacementBC]
     [./corner_fixed_xyz]
       components = 'x y z'
-      boundary = 7
+      boundary = 'corner'
     [../]
     [./left_fixed_x]
       components = 'x'
-      boundary = 1
+      boundary = 'left'
     [../]
     [./bottom_fixed_y]
       components = 'y'
-      boundary = 2
+      boundary = 'bottom'
     [../]
     [./back_fixed_z]
       components = 'z'
-      boundary = 3
+      boundary = 'back'
     [../]
   [../]
   [./right_displace_x]
     type = FunctionDirichletBC
     variable = displ_x
-    boundary = 4
+    boundary = 'right'
     function = ramp
   [../]
 []
