@@ -50,7 +50,7 @@ void GumbyAddElementVariableOutputAction::act()
     {
       if (isParamValid("deformation_gradient"))
       {
-        std::string section_base_name = _base_names[i] + "_deformation_gradient_new";
+        std::string section_base_name = _base_names[i] + "_deformation_gradient";
         std::string variable_base_name = getParam<std::string>("deformation_gradient");
         addFullTensorOutputAuxKernels(section_base_name, variable_base_name, _blocks[i]);
       }

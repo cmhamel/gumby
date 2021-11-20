@@ -1,30 +1,8 @@
 [Tests]
-  [test_run_uniaxial_stress]
+  [test_run_tension]
     type = 'Exodiff'
-    input = 'neohookean_uniaxial_stress.i'
-    exodiff = 'neohookean_uniaxial_stress_out.e'
-    requirement = 'Neohookean single element simulation of uniaxial stress should run'
+    input = 'simo_hughes_fefp_plasticity_teset.i'
+    exodiff = 'simo_hughes_fefp_plasticity_teset_out.e'
+    requirement = 'Simo Hughes FeFp simulation of uniaxial stress should run'
   []
-  [compare_uniaxial_stress_csv]
-    type = 'CSVDiff'
-    input = 'neohookean_uniaxial_stress.i'
-    csvdiff = 'neohookean_uniaxial_stress_out.csv'
-    requirement = 'Neohookean single element simulation of uniaxial stress should give analytic results'
-    rel_err = 1e-03
-    abs_zero = 1e-03
-  []
-  [test_run_simple_shear]
-    type = 'Exodiff'
-    input = 'neohookean_simple_shear.i'
-    exodiff = 'neohookean_simple_shear_out.e'
-    requirement = 'Neohookean single element simulation of simple shear should run'
-  []
-  #[compare_simple_shear_csv]
-  #  type = 'CSVDiff'
-  #  input = 'neohookean_simple_shear.i'
-  #  csvdiff = 'neohookean_simple_shear_out.csv'
-  #  requirement = 'Neohookean single element simulation of simple shear should run'
-  #  rel_err = 1e-03
-  #  abs_zero = 1e-03
-  #[]
 []

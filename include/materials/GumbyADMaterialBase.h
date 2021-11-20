@@ -14,14 +14,24 @@ protected:
   //
   virtual void initQpStatefulProperties() override;
   virtual void computeQpProperties() override;
+  // virtual void initQpStatefulProperties();
+  // virtual void computeQpProperties();
+
+  // debug stuff
+  //
+  void printTensor(std::string name, ADRankTwoTensor A);
 
   // strain methods
   //
   void computeDeformationGradient(void);
-  void computePolarDecomposition(void);
+  void computePolarDecomposition(ADRankTwoTensor & F,
+                                 ADRankTwoTensor & R,
+                                 ADRankTwoTensor & U);
   ADRankTwoTensor computeFbar(ADRankTwoTensor);
   ADRankTwoTensor computeLinearStrain(ADRankTwoTensor);
   ADRankTwoTensor computeGreenLagrangeStrain(ADRankTwoTensor);
+  ADRankTwoTensor computeUnrotatedLogStrain(ADRankTwoTensor);
+  ADRankTwoTensor computeTensorExponential(ADRankTwoTensor);
   // log strain
   // other strain measures?
 
@@ -53,13 +63,13 @@ protected:
 
   // material property to be filled
   //
-  ADMaterialProperty<RankTwoTensor> & _F_old;
   ADMaterialProperty<RankTwoTensor> & _F_new;
+  // const MaterialProperty<RankTwoTensor> & _F_old;
 
   // think this out more and make right vs. left stretch an option
   //
-  ADRankTwoTensor _R_old;
-  ADRankTwoTensor _U_old;
+  // ADRankTwoTensor _R_old;
+  // ADRankTwoTensor _U_old;
 
   ADRankTwoTensor _R_new;
   ADRankTwoTensor _U_new;

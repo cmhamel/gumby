@@ -25,13 +25,13 @@ GumbyADMaterialBase::GumbyADMaterialBase(const InputParameters & parameters)
     _I(ADRankTwoTensor::initIdentity),
     _IxI(_I.outerProduct(_I)),
     _II(_I.mixedProductIkJl(_I)),
-    _grad_disp_old(coupledGradientsOld("displacements")),
     _grad_disp_new(adCoupledGradients("displacements")),
-    _F_old(declareADProperty<RankTwoTensor>(_base_name + "deformation_gradient_old")),
-    _F_new(declareADProperty<RankTwoTensor>(_base_name + "deformation_gradient_new")),
-    _R_old(_I),
+    _grad_disp_old(coupledGradientsOld("displacements")),
+    // _F_old(getMaterialPropertyOld<RankTwoTensor>(_base_name + "deformation_gradient")),
+    _F_new(declareADProperty<RankTwoTensor>(_base_name + "deformation_gradient")),
+    // _R_old(_I),
     _R_new(_I),
-    _U_old(_I),
+    // _U_old(_I),
     _U_new(_I),
     _pk1_stress(declareADProperty<RankTwoTensor>(_base_name + "pk1_stress"))
 {
@@ -51,20 +51,32 @@ GumbyADMaterialBase::GumbyADMaterialBase(const InputParameters & parameters)
   }
 }
 
-// General methods to be overriddent
+// General methods to be overridden
 //
 void
 GumbyADMaterialBase::initQpStatefulProperties()
 {
-  _F_old[_qp].setToIdentity();
+  // _overrides_init_stateful_props = false;
+  std::cout << "in this init method for some odd reason" << std::endl;
+  // _F_old[_qp].setToIdentity();
   _F_new[_qp].setToIdentity();
-  _pk1_stress[_qp].zero();
+  // _pk1_stress[_qp].zero();
 }
 
 void
 GumbyADMaterialBase::computeQpProperties()
 {
   computeDeformationGradient();
+}
+
+// debug stuff
+//
+void GumbyADMaterialBase::printTensor(std::string name, ADRankTwoTensor A)
+{
+  std::cout << name << " = " << std::endl;
+  std::cout << A(0, 0) << "\t" << A(0, 1) << "\t" << A(0, 2) << std::endl;
+  std::cout << A(1, 0) << "\t" << A(1, 1) << "\t" << A(1, 2) << std::endl;
+  std::cout << A(2, 0) << "\t" << A(2, 1) << "\t" << A(2, 2) << std::endl;
 }
 
 // strain methods
@@ -76,11 +88,11 @@ GumbyADMaterialBase::computeDeformationGradient()
   {
     if (_plane_strain)
     {
-      _F_old[_qp](0, 0) = (*_grad_disp_old[0])[_qp](0) + 1.0;
-      _F_old[_qp](0, 1) = (*_grad_disp_old[0])[_qp](1);
-      _F_old[_qp](1, 0) = (*_grad_disp_old[1])[_qp](0);
-      _F_old[_qp](1, 1) = (*_grad_disp_old[1])[_qp](1) + 1.0;
-      _F_old[_qp](2, 2) = 1.0;
+      // _F_old[_qp](0, 0) = (*_grad_disp_old[0])[_qp](0) + 1.0;
+      // _F_old[_qp](0, 1) = (*_grad_disp_old[0])[_qp](1);
+      // _F_old[_qp](1, 0) = (*_grad_disp_old[1])[_qp](0);
+      // _F_old[_qp](1, 1) = (*_grad_disp_old[1])[_qp](1) + 1.0;
+      // _F_old[_qp](2, 2) = 1.0;
 
       _F_new[_qp](0, 0) = (*_grad_disp_new[0])[_qp](0) + 1.0;
       _F_new[_qp](0, 1) = (*_grad_disp_new[0])[_qp](1);
@@ -95,20 +107,22 @@ GumbyADMaterialBase::computeDeformationGradient()
   }
   else
   {
-    ADRankTwoTensor grad_u_old((*_grad_disp_old[0])[_qp],
-                               (*_grad_disp_old[1])[_qp],
-                               (*_grad_disp_old[2])[_qp]);
+    // ADRankTwoTensor grad_u_old((*_grad_disp_old[0])[_qp],
+    //                            (*_grad_disp_old[1])[_qp],
+    //                            (*_grad_disp_old[2])[_qp]);
     ADRankTwoTensor grad_u_new((*_grad_disp_new[0])[_qp],
                                (*_grad_disp_new[1])[_qp],
                                (*_grad_disp_new[2])[_qp]);
 
-    _F_old[_qp] = grad_u_old + _I;
+    // _F_old[_qp] = grad_u_old + _I;
     _F_new[_qp] = grad_u_new + _I;
   }
 }
 
 void
-GumbyADMaterialBase::computePolarDecomposition()
+GumbyADMaterialBase::computePolarDecomposition(ADRankTwoTensor & F,
+                                               ADRankTwoTensor & R,
+                                               ADRankTwoTensor & U)
 {
   // do the usual thing
   //
@@ -116,9 +130,7 @@ GumbyADMaterialBase::computePolarDecomposition()
   std::vector<ADReal> eigen_values(3);
   ADReal lambda_1, lambda_2, lambda_3;
 
-  // old deformation gradient
-  //
-  C_temp = _F_old[_qp].transpose() * _F_old[_qp];
+  C_temp = F.transpose() * F;
   C_temp.symmetricEigenvaluesEigenvectors(eigen_values, eigen_vectors);
 
   lambda_1 = std::sqrt(eigen_values[0]);
@@ -129,34 +141,9 @@ GumbyADMaterialBase::computePolarDecomposition()
   N_2.vectorOuterProduct(eigen_vectors.column(1), eigen_vectors.column(1));
   N_3.vectorOuterProduct(eigen_vectors.column(2), eigen_vectors.column(2));
 
-  // _U_old[_qp] = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
-  // U_inv_temp = _U_old[_qp].inverse();
-  // _R_old[_qp] = _F_old[_qp] * U_inv_temp;
-
-  _U_old = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
-  U_inv_temp = _U_old.inverse();
-  _R_old = _F_old[_qp] * U_inv_temp;
-
-  // new deformation gradient
-  //
-  C_temp = _F_new[_qp].transpose() * _F_new[_qp];
-  C_temp.symmetricEigenvaluesEigenvectors(eigen_values, eigen_vectors);
-
-  lambda_1 = std::sqrt(eigen_values[0]);
-  lambda_2 = std::sqrt(eigen_values[1]);
-  lambda_3 = std::sqrt(eigen_values[2]);
-
-  N_1.vectorOuterProduct(eigen_vectors.column(0), eigen_vectors.column(0));
-  N_2.vectorOuterProduct(eigen_vectors.column(1), eigen_vectors.column(1));
-  N_3.vectorOuterProduct(eigen_vectors.column(2), eigen_vectors.column(2));
-
-  // _U_new[_qp] = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
-  // U_inv_temp = _U_new[_qp].inverse();
-  // _R_new[_qp] = _F_new[_qp] * U_inv_temp;
-
-  _U_new = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
-  U_inv_temp = _U_new.inverse();
-  _R_new = _F_new[_qp] * U_inv_temp;
+  U = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
+  U_inv_temp = U.inverse();
+  R = F * U_inv_temp;
 }
 
 ADRankTwoTensor
@@ -182,6 +169,46 @@ GumbyADMaterialBase::computeGreenLagrangeStrain(ADRankTwoTensor F)
   ADRankTwoTensor C = F.transpose() * F;
   ADRankTwoTensor E = 0.5 * (C - _I);
   return E;
+}
+
+ADRankTwoTensor
+GumbyADMaterialBase::computeUnrotatedLogStrain(ADRankTwoTensor U)
+{
+  ADRankTwoTensor eigen_vectors, N_1, N_2, N_3;
+  std::vector<ADReal> eigen_values(3);
+  ADReal lambda_1, lambda_2, lambda_3;
+  U.symmetricEigenvaluesEigenvectors(eigen_values, eigen_vectors);
+
+  lambda_1 = std::log(eigen_values[0]);
+  lambda_2 = std::log(eigen_values[1]);
+  lambda_3 = std::log(eigen_values[2]);
+
+  N_1.vectorOuterProduct(eigen_vectors.column(0), eigen_vectors.column(0));
+  N_2.vectorOuterProduct(eigen_vectors.column(1), eigen_vectors.column(1));
+  N_3.vectorOuterProduct(eigen_vectors.column(2), eigen_vectors.column(2));
+
+  ADRankTwoTensor logU = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
+  return logU;
+}
+
+ADRankTwoTensor
+GumbyADMaterialBase::computeTensorExponential(ADRankTwoTensor A)
+{
+  ADRankTwoTensor eigen_vectors, N_1, N_2, N_3;
+  std::vector<ADReal> eigen_values(3);
+  ADReal lambda_1, lambda_2, lambda_3;
+  A.symmetricEigenvaluesEigenvectors(eigen_values, eigen_vectors);
+
+  lambda_1 = std::exp(eigen_values[0]);
+  lambda_2 = std::exp(eigen_values[1]);
+  lambda_3 = std::exp(eigen_values[2]);
+
+  N_1.vectorOuterProduct(eigen_vectors.column(0), eigen_vectors.column(0));
+  N_2.vectorOuterProduct(eigen_vectors.column(1), eigen_vectors.column(1));
+  N_3.vectorOuterProduct(eigen_vectors.column(2), eigen_vectors.column(2));
+
+  ADRankTwoTensor expA = lambda_1 * N_1 + lambda_2 * N_2 + lambda_3 * N_3;
+  return expA;
 }
 
 // mapping between stress quantities methods

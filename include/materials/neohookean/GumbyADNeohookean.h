@@ -13,7 +13,6 @@ protected:
 
   ADReal computeStrainEnergy(ADReal,ADReal,ADRankTwoTensor);
   ADRankTwoTensor computePK1Stress(ADReal,ADReal,ADRankTwoTensor);
-  ADRankFourTensor computeMaterialTangent(ADReal,ADReal,ADRankTwoTensor);
 
   // RankTwoTensor computePK1Stress();
 

@@ -1,0 +1,8 @@
+[Tests]
+  [test_run_uniaxial_stress]
+    type = 'Exodiff'
+    input = 'fefp_plasticity_test.i'
+    exodiff = 'fefp_plasticity_test_out.e'
+    requirement = 'FeFp single element simulation of uniaxial stress should run'
+  []
+[]
