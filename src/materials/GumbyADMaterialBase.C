@@ -22,17 +22,10 @@ GumbyADMaterialBase::GumbyADMaterialBase(const InputParameters & parameters)
     _plane_strain((isParamValid("plane_strain") &&
                    getParam<std::string>("plane_strain") == "on") ? true : false),
     _ndisp(coupledComponents("displacements")),
-    _I(ADRankTwoTensor::initIdentity),
-    _IxI(_I.outerProduct(_I)),
-    _II(_I.mixedProductIkJl(_I)),
     _grad_disp_new(adCoupledGradients("displacements")),
     _grad_disp_old(coupledGradientsOld("displacements")),
-    // _F_old(getMaterialPropertyOld<RankTwoTensor>(_base_name + "deformation_gradient")),
+    _F_old(declareADProperty<RankTwoTensor>(_base_name + "deformation_gradient")),
     _F_new(declareADProperty<RankTwoTensor>(_base_name + "deformation_gradient")),
-    // _R_old(_I),
-    _R_new(_I),
-    // _U_old(_I),
-    _U_new(_I),
     _pk1_stress(declareADProperty<RankTwoTensor>(_base_name + "pk1_stress"))
 {
   std::cout << "in constructor in GumbyADMaterialBase" << std::endl;
@@ -57,8 +50,8 @@ void
 GumbyADMaterialBase::initQpStatefulProperties()
 {
   // _overrides_init_stateful_props = false;
-  std::cout << "in this init method for some odd reason" << std::endl;
-  // _F_old[_qp].setToIdentity();
+  // std::cout << "in this init method for some odd reason" << std::endl;
+  _F_old[_qp].setToIdentity();
   _F_new[_qp].setToIdentity();
   // _pk1_stress[_qp].zero();
 }
@@ -88,11 +81,11 @@ GumbyADMaterialBase::computeDeformationGradient()
   {
     if (_plane_strain)
     {
-      // _F_old[_qp](0, 0) = (*_grad_disp_old[0])[_qp](0) + 1.0;
-      // _F_old[_qp](0, 1) = (*_grad_disp_old[0])[_qp](1);
-      // _F_old[_qp](1, 0) = (*_grad_disp_old[1])[_qp](0);
-      // _F_old[_qp](1, 1) = (*_grad_disp_old[1])[_qp](1) + 1.0;
-      // _F_old[_qp](2, 2) = 1.0;
+      _F_old[_qp](0, 0) = (*_grad_disp_old[0])[_qp](0) + 1.0;
+      _F_old[_qp](0, 1) = (*_grad_disp_old[0])[_qp](1);
+      _F_old[_qp](1, 0) = (*_grad_disp_old[1])[_qp](0);
+      _F_old[_qp](1, 1) = (*_grad_disp_old[1])[_qp](1) + 1.0;
+      _F_old[_qp](2, 2) = 1.0;
 
       _F_new[_qp](0, 0) = (*_grad_disp_new[0])[_qp](0) + 1.0;
       _F_new[_qp](0, 1) = (*_grad_disp_new[0])[_qp](1);
@@ -107,14 +100,14 @@ GumbyADMaterialBase::computeDeformationGradient()
   }
   else
   {
-    // ADRankTwoTensor grad_u_old((*_grad_disp_old[0])[_qp],
-    //                            (*_grad_disp_old[1])[_qp],
-    //                            (*_grad_disp_old[2])[_qp]);
+    ADRankTwoTensor grad_u_old((*_grad_disp_old[0])[_qp],
+                               (*_grad_disp_old[1])[_qp],
+                               (*_grad_disp_old[2])[_qp]);
     ADRankTwoTensor grad_u_new((*_grad_disp_new[0])[_qp],
                                (*_grad_disp_new[1])[_qp],
                                (*_grad_disp_new[2])[_qp]);
 
-    // _F_old[_qp] = grad_u_old + _I;
+    _F_old[_qp] = grad_u_old + _I;
     _F_new[_qp] = grad_u_new + _I;
   }
 }

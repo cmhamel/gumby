@@ -2,8 +2,8 @@
   [generated_mesh]
     type = GeneratedMeshGenerator
     dim = 2
-    nx = 25
-    ny = 50
+    nx = 1
+    ny = 1
     # nz = 2
     xmin = 0
     ymin = 0
@@ -128,7 +128,7 @@
 
 [Outputs]
   exodus = true
-  file_base = simo_hughes_fefp_plasticity_test_out
+  file_base = fefp_plasticity_test_out
   perf_graph = true
   print_linear_residuals = false
   execute_on = 'INITIAL TIMESTEP_END'

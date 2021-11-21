@@ -1,8 +1,8 @@
 [Tests]
   [test_run_tension]
     type = 'Exodiff'
-    input = 'simo_hughes_fefp_plasticity_teset.i'
-    exodiff = 'simo_hughes_fefp_plasticity_teset_out.e'
+    input = 'neohookean_uniaxial_stress.i'
+    exodiff = 'neohookean_uniaxial_stress_out.e'
     requirement = 'Simo Hughes FeFp simulation of uniaxial stress should run'
   []
 []

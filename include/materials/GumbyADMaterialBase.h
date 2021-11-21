@@ -14,8 +14,6 @@ protected:
   //
   virtual void initQpStatefulProperties() override;
   virtual void computeQpProperties() override;
-  // virtual void initQpStatefulProperties();
-  // virtual void computeQpProperties();
 
   // debug stuff
   //
@@ -50,29 +48,19 @@ protected:
 
   // convenient tensors
   //
-  ADRankTwoTensor _I;
-  ADRankFourTensor _IxI;
-  ADRankFourTensor _II;
+  ADRankTwoTensor _I = ADRankTwoTensor::initIdentity;
+  ADRankFourTensor _IxI = _I.outerProduct(_I);
+  ADRankFourTensor _II = _I.mixedProductIkJl(_I);
 
   // Quadrature gradient values for all quad points
   //
-  // const VectorVariableGradient & _grad_disp_old;
-  // const ADVectorVariableGradient & _grad_disp_new;
   std::vector<const VariableGradient *> _grad_disp_old;
   std::vector<const ADVariableGradient *> _grad_disp_new;
 
   // material property to be filled
   //
   ADMaterialProperty<RankTwoTensor> & _F_new;
-  // const MaterialProperty<RankTwoTensor> & _F_old;
-
-  // think this out more and make right vs. left stretch an option
-  //
-  // ADRankTwoTensor _R_old;
-  // ADRankTwoTensor _U_old;
-
-  ADRankTwoTensor _R_new;
-  ADRankTwoTensor _U_new;
+  ADMaterialProperty<RankTwoTensor> & _F_old;
 
   ADMaterialProperty<RankTwoTensor> & _pk1_stress;
 };
