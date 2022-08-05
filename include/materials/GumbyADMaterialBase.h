@@ -49,8 +49,8 @@ protected:
   // convenient tensors
   //
   ADRankTwoTensor _I = ADRankTwoTensor::initIdentity;
-  ADRankFourTensor _IxI = _I.outerProduct(_I);
-  ADRankFourTensor _II = _I.mixedProductIkJl(_I);
+  // ADRankFourTensor _IxI = _I.outerProduct(_I);
+  // ADRankFourTensor _II = _I.mixedProductIkJl(_I);
 
   // Quadrature gradient values for all quad points
   //

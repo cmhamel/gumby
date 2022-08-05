@@ -2,7 +2,7 @@
 
 registerMooseObject("GumbyApp", GumbyStressDivergence);
 
-defineLegacyParams(GumbyStressDivergence);
+// defineLegacyParams(GumbyStressDivergence);
 
 InputParameters
 GumbyStressDivergence::validParams()

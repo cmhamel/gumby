@@ -21,8 +21,10 @@ GumbyMaterialBase::GumbyMaterialBase(const InputParameters & parameters)
                    getParam<std::string>("plane_strain") == "on") ? true : false),
     _ndisp(coupledComponents("displacements")),
     _I(RankTwoTensor::initIdentity),
-    _IxI(_I.outerProduct(_I)),
-    _II(_I.mixedProductIkJl(_I)),
+    // _IxI(_I.outerProduct(_I)),
+    // _II(_I.mixedProductIkJl(_I)),
+    // _IxI(_I.times<i, j, k, l>(_I)),
+    // _II(_I.times<i, k, j, l>(_I)),
     _grad_disp_old(coupledGradientsOld("displacements")),
     _grad_disp_new(coupledGradients("displacements")),
     _F_old(declareProperty<RankTwoTensor>(_base_name + "deformation_gradient_old")),
@@ -38,6 +40,10 @@ GumbyMaterialBase::GumbyMaterialBase(const InputParameters & parameters)
     _pk1_stress(declareProperty<RankTwoTensor>(_base_name + "pk1_stress")),
     _material_tangent(declareProperty<RankFourTensor>(_base_name + "material_tangent"))
 {
+  usingTensorIndices(i_, j_, k_, l_);
+  _IxI = _I.times<i_, j_, k_, l_>(_I);
+  _II = _I.times<i_, k_, j_, l_>(_I);
+
   for (unsigned int i = 0; i < _ndisp; ++i)
   {
     if (i < _ndisp)
@@ -210,7 +216,9 @@ GumbyMaterialBase::mapPK2TangentToPK1Tangent(RankTwoTensor S, RankFourTensor C)
 {
   // A_ijkl = delta_ik S_jl + F_im F_kn C_mjnl
   //
-  RankFourTensor A = _I.mixedProductIkJl(S);
+  // RankFourTensor A = _I.mixedProductIkJl(S);
+  usingTensorIndices(i_, j_, k_, l_);
+  RankFourTensor A = _I.times<i_, k_, j_, l_>(S);
   for (unsigned int i = 0; i < 3; ++i)
     for (unsigned int j = 0; j < 3; ++j)
       for (unsigned int k = 0; k < 3; ++k)
