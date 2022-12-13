@@ -2,8 +2,6 @@
 
 registerMooseObject("GumbyApp", GumbyADStressDivergence);
 
-// defineLegacyParams(GumbyADStressDivergence);
-
 InputParameters
 GumbyADStressDivergence::validParams()
 {
